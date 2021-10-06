@@ -1,0 +1,42 @@
+import datetime
+from openpyxl import Workbook, load_workbook
+import pandas as pd
+
+date = str(datetime.datetime.now())
+try:
+    wb = load_workbook('test.xlsx')
+    ws = wb.active
+
+except FileNotFoundError:
+    wb = Workbook()
+    ws = wb.active
+
+def lamp_info():
+    global size,color,amount,more_info,due_date
+    size = input("what is the size: ")
+    amount = input('How many? ')
+    color = input('what is the color: ')
+    due_date = input('Due date: ')
+    more_info = input('is there any more info? ')
+
+
+while True:
+    lamp_name = input('what is the lamp name?: ')
+    if lamp_name == 'q':
+        break
+    sheets_names = []
+    for i in wb.sheetnames:
+        sheets_names.append(i)
+    if lamp_name in sheets_names:
+        ws = wb[lamp_name]
+        lamp_info()
+        ws.append([lamp_name,amount, size,color,due_date, more_info, date])
+    else:
+        wb.create_sheet(lamp_name)
+        ws = wb[lamp_name]
+        ws.append(['name','Amount', "Size", "Color", 'Due date', "Additional info", 'Date'])
+        lamp_info()
+        ws.append([lamp_name,amount, size,color,due_date, more_info, date])
+
+
+wb.save("test.xlsx")
